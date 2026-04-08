@@ -1,20 +1,756 @@
 <!DOCTYPE html>
-<html><body style="background:#001628;color:#f4fbfd;font-family:sans-serif;padding:20px">
-<h2>Pokémon GO Transfer Companion</h2>
-<p><strong>Scroll down ↓</strong></p>
-<p>Built for quick Pokémon cleanup</p>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokémon GO Transfer Companion</title>
+  <meta name="theme-color" content="#001628" />
+  <style>
+    :root{
+      --bg:#001628;
+      --panel:#08304a;
+      --panel-2:#1a425c;
+      --border:rgba(153,217,217,.18);
+      --text:#f4fbfd;
+      --muted:#c8d9e1;
+      --muted-2:#99d9d9;
+      --pill:rgba(153,217,217,.08);
+      --shadow:0 18px 40px rgba(0,0,0,.35);
+      --accent:#99d9d9;
+      --accent-2:#355464;
+      --alert:#e9072b;
+      --surface:rgba(255,255,255,.06);
+      --button-bg:#355464;
+      --button-text:#f4fbfd;
+    }
 
-<div style="background:#99d9d9;color:#001628;padding:6px 10px;border-radius:999px;display:inline-block;margin-top:10px">
-⭐ Recommended: Start here
-</div>
+    body.light{
+      --bg:#f4fbfd;
+      --panel:#ffffff;
+      --panel-2:#eaf4f7;
+      --border:rgba(0,22,40,.12);
+      --text:#001628;
+      --muted:#355464;
+      --muted-2:#4f7182;
+      --pill:#f5fbfc;
+      --shadow:0 18px 40px rgba(0,22,40,.10);
+      --accent:#355464;
+      --accent-2:#99d9d9;
+      --alert:#e9072b;
+      --surface:#f5fbfc;
+      --button-bg:#001628;
+      --button-text:#f4fbfd;
+    }
 
-<h3>🧹 V1 Basic</h3>
-<a href="v1/">Open</a>
+    *{box-sizing:border-box}
 
-<h3>⚙️ V2 Intermediate</h3>
-<a href="v2/">Open</a>
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, rgba(153,217,217,.16), transparent 28%),
+        linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 88%, #00111f) 100%);
+      min-height:100vh;
+    }
 
-<h3>🧠 V3 Advanced</h3>
-<a href="v3/">Open</a>
+    .wrap{
+      max-width:820px;
+      margin:0 auto;
+      padding:20px 16px 40px;
+    }
 
-</body></html>
+    .hero{
+      border:1px solid var(--border);
+      border-radius:30px;
+      overflow:hidden;
+      background:linear-gradient(135deg, var(--panel), var(--panel-2));
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+
+    .hero-top{
+      padding:22px 20px 20px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .top-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid rgba(153,217,217,.28);
+      background:rgba(153,217,217,.10);
+      color:var(--accent);
+      border-radius:999px;
+      padding:7px 11px;
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+
+    .theme-btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background:var(--button-bg);
+      color:var(--button-text);
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+      white-space:nowrap;
+      min-height:46px;
+      touch-action:manipulation;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .site-sub{
+      margin:0;
+      color:var(--text);
+      font-size:16px;
+      font-weight:700;
+      line-height:1.5;
+    }
+
+    .site-note{
+      margin-top:6px;
+      font-size:11px;
+      opacity:.45;
+      letter-spacing:.08em;
+      color:var(--muted-2);
+    }
+
+    .qr-wrap{
+      margin-top:20px;
+      display:grid;
+      gap:18px;
+      grid-template-columns:190px 1fr;
+      align-items:center;
+    }
+
+    .qr-card{
+      border:1px solid var(--border);
+      background:var(--surface);
+      border-radius:24px;
+      padding:16px;
+      text-align:center;
+    }
+
+    .qr-card img{
+      width:100%;
+      max-width:160px;
+      height:auto;
+      border-radius:18px;
+      background:#fff;
+      padding:8px;
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
+    }
+
+    .qr-label{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:18px;
+      padding:14px 18px;
+      min-height:50px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      transition:transform .15s ease, filter .15s ease;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:scale(.985)}
+
+    .btn-primary{
+      background:var(--accent);
+      color:#001628;
+    }
+
+    body.light .btn-primary{
+      background:var(--accent);
+      color:#f4fbfd;
+    }
+
+    .btn-secondary{
+      background:var(--surface);
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .tiny-note{
+      margin-top:10px;
+      color:var(--muted-2);
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .safety{
+      margin:18px 20px 0;
+      border:1px solid var(--border);
+      border-radius:24px;
+      overflow:hidden;
+      background:var(--surface);
+    }
+
+    .safety-grad{
+      background:linear-gradient(90deg,var(--accent),#4d7d91,var(--alert));
+      padding:1px;
+    }
+
+    .safety-inner{
+      background:linear-gradient(135deg, color-mix(in srgb, var(--panel) 96%, black 4%), color-mix(in srgb, var(--panel-2) 96%, black 4%));
+      display:grid;
+      grid-template-columns:88px 1fr;
+    }
+
+    .safety-icon{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:50px;
+      background:rgba(0,0,0,.12);
+      padding:14px;
+    }
+
+    .safety-content{
+      padding:16px;
+    }
+
+    .safety-kicker{
+      font-size:11px;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      color:var(--muted-2);
+      font-weight:900;
+    }
+
+    .safety-title{
+      margin-top:8px;
+      font-size:22px;
+      font-weight:900;
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+
+    .safety-steps{
+      display:grid;
+      gap:8px;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      margin-top:12px;
+    }
+
+    .safety-step{
+      border-radius:18px;
+      background:var(--surface);
+      padding:12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    .safety-step strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+
+    .safety-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .section{
+      margin-top:20px;
+      border:1px solid var(--border);
+      border-radius:30px;
+      background:linear-gradient(135deg, var(--panel), var(--panel-2));
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+
+    .section-title{
+      font-size:12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:var(--muted-2);
+      font-weight:900;
+      margin-bottom:14px;
+    }
+
+    .cards{
+      display:grid;
+      gap:16px;
+    }
+
+    .mode{
+      border-radius:28px;
+      padding:1px;
+      background:linear-gradient(90deg,#001628,#355464,#99d9d9);
+      box-shadow:var(--shadow);
+    }
+
+    .mode.v2{
+      background:linear-gradient(90deg,#355464,#99d9d9,#001628);
+    }
+
+    .mode.v3{
+      background:linear-gradient(90deg,#001628,#355464,#e9072b);
+    }
+
+    .mode-inner{
+      border-radius:27px;
+      background:linear-gradient(135deg, color-mix(in srgb, var(--panel) 97%, black 3%), color-mix(in srgb, var(--panel-2) 97%, black 3%));
+      padding:20px 18px 18px;
+    }
+
+    .recommended-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:12px;
+      padding:7px 12px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.08em;
+      border-radius:999px;
+      background:linear-gradient(90deg,#99d9d9,#355464);
+      color:#001628;
+    }
+
+    .mode-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .mode-left{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      min-width:0;
+    }
+
+    .mode-icon{
+      width:54px;
+      height:54px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      font-size:26px;
+      background:var(--surface);
+      flex:0 0 54px;
+    }
+
+    .mode-kicker{
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--muted-2);
+      font-weight:900;
+    }
+
+    .mode-title{
+      margin-top:4px;
+      font-size:24px;
+      line-height:1.05;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
+
+    .mode-sub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.5;
+    }
+
+    .risk{
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:10px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      border:1px solid var(--border);
+      background:var(--surface);
+      color:var(--text);
+      white-space:nowrap;
+    }
+
+    .bullets{
+      display:grid;
+      gap:10px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      margin:16px 0 18px;
+    }
+
+    .bullet{
+      border-radius:18px;
+      background:var(--surface);
+      padding:13px 14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .bullet strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+
+    .mode-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .mode-actions .btn{
+      flex:1 1 180px;
+    }
+
+    .footer-note{
+      margin-top:16px;
+      color:var(--muted-2);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:14px;
+      transform:translateX(-50%) translateY(16px);
+      width:min(calc(100% - 24px), 700px);
+      border-radius:18px;
+      padding:14px 16px;
+      text-align:center;
+      font-weight:800;
+      font-size:14px;
+      color:#f4fbfd;
+      background:rgba(53,84,100,.92);
+      border:1px solid rgba(153,217,217,.35);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow);
+      opacity:0;
+      pointer-events:none;
+      transition:all .28s ease;
+      z-index:50;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    @media (max-width:760px){
+      .qr-wrap{
+        grid-template-columns:1fr;
+      }
+
+      .qr-card{
+        max-width:240px;
+      }
+    }
+
+    @media (max-width:640px){
+      .wrap{
+        padding:16px 12px 32px;
+      }
+
+      .hero-top{
+        padding:18px 16px 16px;
+      }
+
+      .top-row{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .theme-btn{
+        align-self:flex-start;
+      }
+
+      .safety-inner{
+        grid-template-columns:1fr;
+      }
+
+      .safety-steps{
+        grid-template-columns:1fr;
+      }
+
+      .mode-top{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .bullets{
+        grid-template-columns:1fr;
+      }
+
+      .mode-actions{
+        flex-direction:column;
+      }
+
+      .mode-actions .btn{
+        width:100%;
+        flex:none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="top-row">
+          <div>
+            <div class="badge">Pokémon GO Transfer Companion</div>
+            <p class="site-sub">Scroll down to choose your cleanup mode ↓</p>
+            <p class="site-note">Built for quick Pokémon cleanup</p>
+          </div>
+          <button id="themeToggle" class="theme-btn" type="button">🏒 Away colors</button>
+        </div>
+
+        <div class="qr-wrap">
+          <div class="qr-card">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=https%3A%2F%2FHotsauceLover.github.io%2Fpokemon-cleanup%2F" alt="QR code for the Pokémon GO Transfer Companion" />
+            <div class="qr-label">Scan to open the tool</div>
+          </div>
+
+          <div>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="https://HotsauceLover.github.io/pokemon-cleanup/" target="_blank" rel="noopener noreferrer">🚀 Open Main Landing Page</a>
+              <button id="shareBtn" class="btn btn-secondary" type="button">🔗 Share this link</button>
+              <a class="btn btn-secondary" href="https://api.qrserver.com/v1/create-qr-code/?size=1080x1080&data=https%3A%2F%2FHotsauceLover.github.io%2Fpokemon-cleanup%2F" download="hotsaucelover-pokemon-cleanup-qr.png" target="_blank" rel="noopener noreferrer">⬇️ Download QR</a>
+            </div>
+            <div class="tiny-note">
+              Share the URL directly, let people scan the QR code, or save the QR image for screenshots, posters, and group chats.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="safety">
+        <div class="safety-grad">
+          <div class="safety-inner">
+            <div class="safety-icon">⚠️</div>
+            <div class="safety-content">
+              <div class="safety-kicker">Quick safety check</div>
+              <div class="safety-title">Don’t tap Select All and instantly transfer.</div>
+              <div class="safety-steps">
+                <div class="safety-step"><strong>1. Copy</strong><div>Use the version that fits your comfort level.</div></div>
+                <div class="safety-step"><strong>2. Quick-scan</strong><div>Look for anything spicy before deleting.</div></div>
+                <div class="safety-step"><strong>3. Favorite</strong><div>Star keeps first, then transfer.</div></div>
+              </div>
+              <div class="safety-note"><strong>Why:</strong> even a strong cleanup filter can still catch fringe PvP or PvE keeps like near-ideal IV spreads.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-note" style="padding:0 20px 20px;">
+        Same family, three comfort levels: <strong>V1 Basic</strong>, <strong>V2 Intermediate</strong>, and <strong>V3 Advanced</strong>.
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Choose your version</div>
+
+      <div class="cards">
+        <article class="mode">
+          <div class="mode-inner">
+            <div class="recommended-pill">⭐ Recommended: Start here</div>
+
+            <div class="mode-top">
+              <div class="mode-left">
+                <div class="mode-icon">🧹</div>
+                <div>
+                  <div class="mode-kicker">V1 · Basic</div>
+                  <div class="mode-title">Clean starting point</div>
+                  <div class="mode-sub">
+                    One balanced cleanup string with a quick safety reminder, tap-to-copy, and a fast copy → paste workflow.
+                  </div>
+                </div>
+              </div>
+              <div class="risk">Recommended</div>
+            </div>
+
+            <div class="bullets">
+              <div class="bullet"><strong>Best for</strong>Daily cleanup with the least friction.</div>
+              <div class="bullet"><strong>Feel</strong>Clean, lightweight, and beginner-friendly.</div>
+              <div class="bullet"><strong>Main action</strong>Copy the balanced string, paste it in Pokémon GO, quick-scan, then transfer.</div>
+              <div class="bullet"><strong>Why choose it</strong>Best default starting point.</div>
+            </div>
+
+            <div class="mode-actions">
+              <a class="btn btn-primary" href="https://HotsauceLover.github.io/pokemon-cleanup/v1/" target="_blank" rel="noopener noreferrer">Open V1 Basic</a>
+              <button class="btn btn-secondary copy-link" type="button" data-url="https://HotsauceLover.github.io/pokemon-cleanup/v1/">Copy V1 link</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="mode v2">
+          <div class="mode-inner">
+            <div class="mode-top">
+              <div class="mode-left">
+                <div class="mode-icon">⚙️</div>
+                <div>
+                  <div class="mode-kicker">V2 · Intermediate</div>
+                  <div class="mode-title">More control, still simple</div>
+                  <div class="mode-sub">
+                    Choose Safe, Balanced, or Aggressive mode, add a few optional protections, and copy a smarter cleanup string.
+                  </div>
+                </div>
+              </div>
+              <div class="risk">Most practical</div>
+            </div>
+
+            <div class="bullets">
+              <div class="bullet"><strong>Best for</strong>Players who want more control without clutter.</div>
+              <div class="bullet"><strong>Feel</strong>Guided and still easy to use.</div>
+              <div class="bullet"><strong>Main action</strong>Pick a mode, toggle protections, then copy.</div>
+              <div class="bullet"><strong>Why choose it</strong>Adds guard rails and a small risk preview without becoming a power-user tool.</div>
+            </div>
+
+            <div class="mode-actions">
+              <a class="btn btn-primary" href="https://HotsauceLover.github.io/pokemon-cleanup/v2/" target="_blank" rel="noopener noreferrer">Open V2 Intermediate</a>
+              <button class="btn btn-secondary copy-link" type="button" data-url="https://HotsauceLover.github.io/pokemon-cleanup/v2/">Copy V2 link</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="mode v3">
+          <div class="mode-inner">
+            <div class="mode-top">
+              <div class="mode-left">
+                <div class="mode-icon">🧠</div>
+                <div>
+                  <div class="mode-kicker">V3 · Advanced</div>
+                  <div class="mode-title">Power-user companion</div>
+                  <div class="mode-sub">
+                    Build deeper cleanup recipes with staged passes, warning labels, catch previews, and shareable local presets.
+                  </div>
+                </div>
+              </div>
+              <div class="risk">Most powerful</div>
+            </div>
+
+            <div class="bullets">
+              <div class="bullet"><strong>Best for</strong>Players who want multi-pass cleanup workflows.</div>
+              <div class="bullet"><strong>Feel</strong>Advanced, but still browser-based and fan-made.</div>
+              <div class="bullet"><strong>Main action</strong>Pick a recipe, pick a pass, review warnings, then copy.</div>
+              <div class="bullet"><strong>Why choose it</strong>Maximum flexibility without needing a backend.</div>
+            </div>
+
+            <div class="mode-actions">
+              <a class="btn btn-primary" href="https://HotsauceLover.github.io/pokemon-cleanup/v3/" target="_blank" rel="noopener noreferrer">Open V3 Advanced</a>
+              <button class="btn btn-secondary copy-link" type="button" data-url="https://HotsauceLover.github.io/pokemon-cleanup/v3/">Copy V3 link</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="footer-note">
+        Recommended rollout: let <strong>index.html</strong> be this landing page, then place the three tools at <strong>/v1/</strong>, <strong>/v2/</strong>, and <strong>/v3/</strong>.
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast">Copied.</div>
+
+  <script>
+    const landingUrl = "https://HotsauceLover.github.io/pokemon-cleanup/";
+    const toast = document.getElementById("toast");
+    const themeToggle = document.getElementById("themeToggle");
+    let toastTimer = null;
+
+    function showToast(message){
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    async function copyText(text, successMessage){
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast(successMessage);
+      }catch(err){
+        showToast("Copy was blocked here. Press and hold to copy manually.");
+      }
+    }
+
+    function applyTheme(){
+      const isLight = document.body.classList.contains("light");
+      themeToggle.textContent = isLight ? "🦑 Home colors" : "🏒 Away colors";
+    }
+
+    if(localStorage.getItem("pogo-landing-theme") === "light"){
+      document.body.classList.add("light");
+    }
+    applyTheme();
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      localStorage.setItem("pogo-landing-theme", document.body.classList.contains("light") ? "light" : "dark");
+      applyTheme();
+    });
+
+    document.getElementById("shareBtn").addEventListener("click", async () => {
+      if(navigator.share){
+        try{
+          await navigator.share({
+            title: "Pokémon GO Transfer Companion",
+            text: "Try this Pokémon GO transfer companion.",
+            url: landingUrl
+          });
+          showToast("Share sheet opened.");
+          return;
+        }catch(err){}
+      }
+      copyText(landingUrl, "Main landing page link copied.");
+    });
+
+    document.querySelectorAll(".copy-link").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const url = btn.getAttribute("data-url");
+        copyText(url, "Version link copied.");
+      });
+    });
+  </script>
+</body>
+</html>
