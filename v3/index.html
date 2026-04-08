@@ -1,1 +1,36 @@
-<html><body style='background:#001628;color:white;text-align:center;padding:40px'><h1>🧠 V3 Advanced</h1></body></html>
+<!DOCTYPE html>
+<html>
+<body style="background:#001628;color:#f4fbfd;font-family:sans-serif;padding:20px">
+
+<h2>🧠 V3 Advanced</h2>
+
+<p>Stage workflow:</p>
+
+<button onclick="stage(1)">Safe Pass</button>
+<button onclick="stage(2)">Second Pass</button>
+<button onclick="stage(3)">Aggressive</button>
+
+<br><br>
+
+<textarea id="output" style="width:100%;height:120px"></textarea>
+
+<script>
+function stage(step){
+  let text = "";
+
+  if(step === 1){
+    text = "!shiny&!legendary&!favorite";
+  }
+  if(step === 2){
+    text = "!shiny&!legendary";
+  }
+  if(step === 3){
+    text = "!shiny";
+  }
+
+  document.getElementById("output").value = text;
+}
+</script>
+
+</body>
+</html>
