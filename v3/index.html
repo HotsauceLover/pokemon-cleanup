@@ -1,36 +1,908 @@
 <!DOCTYPE html>
-<html>
-<body style="background:#001628;color:#f4fbfd;font-family:sans-serif;padding:20px">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokémon GO Transfer Companion — V3 Advanced</title>
+  <meta name="theme-color" content="#001628" />
+  <style>
+    :root{
+      --bg:#001628;
+      --panel:#08304a;
+      --panel-2:#1a425c;
+      --border:rgba(153,217,217,.18);
+      --text:#f4fbfd;
+      --muted:#c8d9e1;
+      --muted-2:#99d9d9;
+      --pill:rgba(153,217,217,.08);
+      --button-bg:#355464;
+      --button-text:#f4fbfd;
+      --shadow:0 16px 40px rgba(0,0,0,.35);
+      --accent:#99d9d9;
+      --danger:#e9072b;
+      --warn:#e2b14c;
+      --code-bg:rgba(0,22,40,.28);
+      --tile:rgba(53,84,100,.26);
+      --safe:#99d9d9;
+      --caution:#e2b14c;
+      --risky:#ff8fa1;
+    }
 
-<h2>🧠 V3 Advanced</h2>
+    body.light{
+      --bg:#f4fbfd;
+      --panel:#ffffff;
+      --panel-2:#eaf4f7;
+      --border:rgba(0,22,40,.12);
+      --text:#001628;
+      --muted:#355464;
+      --muted-2:#4f7182;
+      --pill:#f5fbfc;
+      --button-bg:#001628;
+      --button-text:#f4fbfd;
+      --shadow:0 16px 40px rgba(0,22,40,.10);
+      --accent:#355464;
+      --danger:#e9072b;
+      --warn:#b26b00;
+      --code-bg:#eef6f8;
+      --tile:#f0f7f9;
+      --safe:#355464;
+      --caution:#b26b00;
+      --risky:#e9072b;
+    }
 
-<p>Stage workflow:</p>
+    *{box-sizing:border-box}
 
-<button onclick="stage(1)">Safe Pass</button>
-<button onclick="stage(2)">Second Pass</button>
-<button onclick="stage(3)">Aggressive</button>
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:linear-gradient(180deg,var(--bg),color-mix(in srgb, var(--bg) 88%, #00111f));
+      color:var(--text);
+      min-height:100vh;
+    }
 
-<br><br>
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:18px 14px 34px;
+    }
 
-<textarea id="output" style="width:100%;height:120px"></textarea>
+    .hero{
+      border:1px solid var(--border);
+      border-radius:30px;
+      overflow:hidden;
+      background:linear-gradient(135deg,var(--panel),var(--panel-2));
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
 
-<script>
-function stage(step){
-  let text = "";
+    .hero-top{
+      padding:20px;
+      border-bottom:1px solid var(--border);
+    }
 
-  if(step === 1){
-    text = "!shiny&!legendary&!favorite";
-  }
-  if(step === 2){
-    text = "!shiny&!legendary";
-  }
-  if(step === 3){
-    text = "!shiny";
-  }
+    .top-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
 
-  document.getElementById("output").value = text;
-}
-</script>
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid rgba(153,217,217,.28);
+      background:rgba(153,217,217,.10);
+      color:var(--accent);
+      border-radius:999px;
+      padding:7px 11px;
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-weight:800;
+      margin-bottom:12px;
+    }
 
+    .theme-btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background:var(--button-bg);
+      color:var(--button-text);
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(28px,5vw,42px);
+      line-height:1.02;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .sub{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.45;
+    }
+
+    .safety{
+      margin-top:18px;
+      border:1px solid var(--border);
+      border-radius:24px;
+      overflow:hidden;
+      background:var(--pill);
+    }
+
+    .safety-grad{
+      background:linear-gradient(90deg,#99d9d9,#355464,#e9072b);
+      padding:1px;
+    }
+
+    .safety-inner{
+      background:linear-gradient(135deg, color-mix(in srgb, var(--panel) 96%, black 4%), color-mix(in srgb, var(--panel-2) 96%, black 4%));
+      display:grid;
+      grid-template-columns:88px 1fr;
+    }
+
+    .safety-icon{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:50px;
+      background:rgba(0,0,0,.12);
+      padding:14px;
+    }
+
+    .safety-content{
+      padding:16px;
+    }
+
+    .safety-kicker{
+      font-size:11px;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      color:var(--muted-2);
+      font-weight:900;
+    }
+
+    .safety-title{
+      margin-top:8px;
+      font-size:22px;
+      font-weight:900;
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+
+    .safety-steps{
+      display:grid;
+      gap:8px;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      margin-top:12px;
+    }
+
+    .safety-step{
+      border-radius:18px;
+      background:var(--tile);
+      padding:12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    .safety-step strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+
+    .safety-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .grid{
+      display:grid;
+      gap:18px;
+      grid-template-columns:1.15fr .85fr;
+    }
+
+    .panel{
+      border:1px solid var(--border);
+      border-radius:30px;
+      background:linear-gradient(135deg,var(--panel),var(--panel-2));
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .section-title{
+      font-size:12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:var(--muted-2);
+      font-weight:900;
+      margin-bottom:14px;
+    }
+
+    .lead{
+      color:var(--muted);
+      margin:0 0 16px;
+      line-height:1.5;
+      font-size:15px;
+    }
+
+    .recipes, .passes{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .recipe-btn, .pass-btn{
+      border:1px solid var(--border);
+      background:var(--tile);
+      color:var(--text);
+      border-radius:18px;
+      padding:14px 12px;
+      font-weight:900;
+      cursor:pointer;
+      text-align:left;
+    }
+
+    .recipe-btn small, .pass-btn small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:12px;
+    }
+
+    .recipe-btn.active, .pass-btn.active{
+      outline:2px solid var(--accent);
+      background:rgba(153,217,217,.10);
+    }
+
+    .custom-grid{
+      display:grid;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:18px;
+      background:var(--tile);
+      border:1px solid var(--border);
+    }
+
+    .toggle input{
+      transform:scale(1.2);
+    }
+
+    .toggle strong{
+      display:block;
+      font-size:14px;
+    }
+
+    .toggle span{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+    }
+
+    .preset-row{
+      display:flex;
+      gap:10px;
+      margin-bottom:16px;
+      flex-wrap:wrap;
+    }
+
+    .preset-input{
+      flex:1;
+      min-width:180px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:var(--code-bg);
+      color:var(--text);
+      padding:12px 14px;
+      font-size:14px;
+    }
+
+    .output{
+      width:100%;
+      min-height:132px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      background:var(--code-bg);
+      color:var(--text);
+      padding:14px;
+      font:600 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      resize:vertical;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:16px;
+      padding:13px 16px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      transition:transform .15s ease, filter .15s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:scale(.99)}
+
+    .btn-primary{
+      background:var(--accent);
+      color:#001628;
+    }
+
+    body.light .btn-primary{
+      color:#f4fbfd;
+      background:var(--accent);
+    }
+
+    .btn-secondary{
+      background:var(--tile);
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .status-card, .catch-card{
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:var(--tile);
+      padding:14px;
+      margin-bottom:14px;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:10px;
+    }
+
+    .status-pill.safe{
+      background:rgba(153,217,217,.14);
+      color:var(--safe);
+    }
+
+    .status-pill.caution{
+      background:rgba(226,177,76,.16);
+      color:var(--caution);
+    }
+
+    .status-pill.risky{
+      background:rgba(233,7,43,.14);
+      color:var(--risky);
+    }
+
+    .status-title{
+      font-size:18px;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .status-text, .catch-list{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .catch-list ul{
+      margin:10px 0 0 18px;
+      padding:0;
+    }
+
+    .tiny-note{
+      margin-top:10px;
+      color:var(--muted-2);
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:14px;
+      transform:translateX(-50%) translateY(16px);
+      width:min(calc(100% - 24px), 700px);
+      border-radius:18px;
+      padding:14px 16px;
+      text-align:center;
+      font-weight:800;
+      font-size:14px;
+      color:#f4fbfd;
+      background:rgba(53,84,100,.92);
+      border:1px solid rgba(153,217,217,.35);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow);
+      opacity:0;
+      pointer-events:none;
+      transition:all .28s ease;
+      z-index:50;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    @media (max-width:940px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:640px){
+      .top-row{
+        flex-direction:column;
+      }
+      .theme-btn{
+        align-self:flex-start;
+      }
+      .safety-inner{
+        grid-template-columns:1fr;
+      }
+      .safety-steps, .recipes, .passes{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="top-row">
+          <div>
+            <div class="badge">Pokémon GO Transfer Companion</div>
+            <h1>🧠 V3 Advanced</h1>
+            <p class="sub">Power-user control, still browser-based</p>
+          </div>
+          <button id="themeToggle" class="theme-btn" type="button">🏒 Away colors</button>
+        </div>
+
+        <section class="safety">
+          <div class="safety-grad">
+            <div class="safety-inner">
+              <div class="safety-icon">⚠️</div>
+              <div class="safety-content">
+                <div class="safety-kicker">Quick safety check</div>
+                <div class="safety-title">Don’t let advanced options trick you into blind transfers.</div>
+                <div class="safety-steps">
+                  <div class="safety-step"><strong>1. Build recipe</strong><div>Pick Strict, Loose, or Custom.</div></div>
+                  <div class="safety-step"><strong>2. Choose pass</strong><div>Safe First Pass → Second Pass → Aggressive.</div></div>
+                  <div class="safety-step"><strong>3. Review warnings</strong><div>Then copy and quick-scan.</div></div>
+                </div>
+                <div class="safety-note"><strong>Why:</strong> V3 is powerful, but the tool should still feel like a companion — not a permission slip to mass delete without looking.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="section-title">Recipe builder</div>
+        <p class="lead">Choose a recipe style, choose a workflow pass, optionally customize protections, then copy the final output.</p>
+
+        <div class="recipes">
+          <button class="recipe-btn active" data-recipe="strict">
+            Strict
+            <small>Protects more</small>
+          </button>
+          <button class="recipe-btn" data-recipe="loose">
+            Loose
+            <small>Moves faster</small>
+          </button>
+          <button class="recipe-btn" data-recipe="custom">
+            Custom
+            <small>You decide</small>
+          </button>
+        </div>
+
+        <div class="passes">
+          <button class="pass-btn active" data-pass="safe">
+            Safe First Pass
+            <small>Lowest risk</small>
+          </button>
+          <button class="pass-btn" data-pass="second">
+            Second Pass
+            <small>Balanced cleanup</small>
+          </button>
+          <button class="pass-btn" data-pass="aggressive">
+            Aggressive Pass
+            <small>Fastest sweep</small>
+          </button>
+        </div>
+
+        <div id="customSection" class="custom-grid" style="display:none;">
+          <label class="toggle">
+            <input type="checkbox" id="protectShiny" checked />
+            <div>
+              <strong>Protect Shinies</strong>
+              <span>Keep shinies out of transfer results.</span>
+            </div>
+          </label>
+
+          <label class="toggle">
+            <input type="checkbox" id="protectLegendary" checked />
+            <div>
+              <strong>Protect Legendaries / Mythicals</strong>
+              <span>Keep major rare categories safe.</span>
+            </div>
+          </label>
+
+          <label class="toggle">
+            <input type="checkbox" id="protectPvp" checked />
+            <div>
+              <strong>PvP Safe</strong>
+              <span>Protect more near-ideal PvP spreads.</span>
+            </div>
+          </label>
+
+          <label class="toggle">
+            <input type="checkbox" id="protectPve" checked />
+            <div>
+              <strong>PvE Safe</strong>
+              <span>Protect stronger raid-style IVs.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="preset-row">
+          <input id="presetName" class="preset-input" type="text" placeholder="Preset name (example: Bradley Safe Sweep)" />
+          <button id="savePresetBtn" class="btn btn-secondary" type="button">💾 Save preset</button>
+          <button id="sharePresetBtn" class="btn btn-secondary" type="button">🔗 Share preset</button>
+        </div>
+
+        <textarea id="output" class="output" spellcheck="false"></textarea>
+
+        <div class="actions">
+          <button id="copyBtn" class="btn btn-primary" type="button">📋 Copy</button>
+          <button id="openBtn" class="btn btn-secondary" type="button">🎮 Open Pokémon GO</button>
+          <a class="btn btn-secondary" href="../index.html">⬅ Back to Landing</a>
+        </div>
+
+        <div class="tiny-note">
+          V3 keeps copy → paste as the center of the tool, but gives you deeper workflows, warning labels, and shareable preset logic without needing a backend.
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">Warning label</div>
+
+        <div class="status-card">
+          <div id="statusPill" class="status-pill caution">Caution</div>
+          <div id="statusTitle" class="status-title">Balanced power-user mode</div>
+          <div id="statusText" class="status-text">
+            This setup is strong enough to move quickly, but still tries to protect meaningful edge cases.
+          </div>
+        </div>
+
+        <div class="catch-card">
+          <div class="section-title" style="margin-bottom:10px;">What this might catch</div>
+          <div id="catchList" class="catch-list"></div>
+        </div>
+
+        <div class="status-card">
+          <div class="section-title" style="margin-bottom:10px;">Saved presets</div>
+          <div id="presetList" class="status-text">No presets saved yet.</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied.</div>
+
+  <script>
+    const recipeButtons = document.querySelectorAll(".recipe-btn");
+    const passButtons = document.querySelectorAll(".pass-btn");
+    const customSection = document.getElementById("customSection");
+    const output = document.getElementById("output");
+    const copyBtn = document.getElementById("copyBtn");
+    const openBtn = document.getElementById("openBtn");
+    const toast = document.getElementById("toast");
+    const themeToggle = document.getElementById("themeToggle");
+    const statusPill = document.getElementById("statusPill");
+    const statusTitle = document.getElementById("statusTitle");
+    const statusText = document.getElementById("statusText");
+    const catchList = document.getElementById("catchList");
+    const presetName = document.getElementById("presetName");
+    const savePresetBtn = document.getElementById("savePresetBtn");
+    const sharePresetBtn = document.getElementById("sharePresetBtn");
+    const presetList = document.getElementById("presetList");
+
+    const protectShiny = document.getElementById("protectShiny");
+    const protectLegendary = document.getElementById("protectLegendary");
+    const protectPvp = document.getElementById("protectPvp");
+    const protectPve = document.getElementById("protectPve");
+
+    let currentRecipe = "strict";
+    let currentPass = "safe";
+    let toastTimer = null;
+
+    function showToast(message){
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function getRecipeSettings(){
+      if(currentRecipe === "strict"){
+        return {
+          shiny: true,
+          legendary: true,
+          pvp: true,
+          pve: true
+        };
+      }
+
+      if(currentRecipe === "loose"){
+        return {
+          shiny: true,
+          legendary: false,
+          pvp: false,
+          pve: false
+        };
+      }
+
+      return {
+        shiny: protectShiny.checked,
+        legendary: protectLegendary.checked,
+        pvp: protectPvp.checked,
+        pve: protectPve.checked
+      };
+    }
+
+    function getBasePassString(){
+      if(currentPass === "safe"){
+        return "!favorite&!costume&!shadow&!purified&!traded&!lucky&!4*&!xxs&!xxl";
+      }
+      if(currentPass === "second"){
+        return "!favorite&!costume&!shadow&!purified&!4*&!xxs&!xxl";
+      }
+      return "!favorite&!4*&!xxs&!xxl";
+    }
+
+    function buildString(){
+      const settings = getRecipeSettings();
+      let str = getBasePassString();
+
+      if(settings.shiny){
+        str = "!shiny&" + str;
+      }
+      if(settings.legendary){
+        str = "!legendary&!mythical&!ultra beasts&" + str;
+      }
+      if(settings.pvp){
+        if(currentPass === "safe"){
+          str += "&!(0-2attack&2-4defense&2-4hp)";
+        } else if(currentPass === "second"){
+          str += "&!(0-1attack&3-4defense&3-4hp)";
+        }
+      }
+      if(settings.pve && currentPass !== "aggressive"){
+        str += "&!(3-4attack&3-4defense&3-4hp)";
+      }
+
+      output.value = str;
+      updateStatus(settings);
+    }
+
+    function updateStatus(settings){
+      let pillClass = "caution";
+      let pillText = "Caution";
+      let title = "Balanced power-user mode";
+      let text = "This setup is strong enough to move quickly, but still tries to protect meaningful edge cases.";
+      let catches = [];
+
+      if(currentPass === "safe"){
+        pillClass = "safe";
+        pillText = "Safe";
+        title = "Lowest-risk advanced pass";
+        text = "This is the gentlest advanced workflow. It is the best place to start before moving to deeper cleanup.";
+        catches = [
+          "Mostly obvious clutter",
+          "Less likely to catch fringe PvP/PvE keeps",
+          "Still worth a quick scroll"
+        ];
+      } else if(currentPass === "second"){
+        pillClass = "caution";
+        pillText = "Caution";
+        title = "Balanced cleanup pass";
+        text = "This is the most practical middle ground for advanced users. Faster than Safe First Pass, but still not reckless.";
+        catches = [
+          "Some weaker fringe PvP candidates",
+          "Pokémon you forgot to favorite",
+          "Anything the filters cannot fully understand"
+        ];
+      } else {
+        pillClass = "risky";
+        pillText = "Risky";
+        title = "Fastest but deserves attention";
+        text = "Aggressive Pass is for speed. It should feel like a cleanup sweep, not a no-look delete button.";
+        catches = [
+          "Fringe PvP keeps",
+          "Some borderline PvE attackers",
+          "Anything you meant to star later"
+        ];
+      }
+
+      if(currentRecipe === "loose"){
+        catches.push("Looser protections because the recipe is set to Loose");
+      }
+      if(currentRecipe === "custom"){
+        catches.push("Anything you stopped protecting in Custom mode");
+      }
+
+      statusPill.className = "status-pill " + pillClass;
+      statusPill.textContent = pillText;
+      statusTitle.textContent = title;
+      statusText.textContent = text;
+
+      catchList.innerHTML = "<ul>" + catches.map(item => "<li>" + item + "</li>").join("") + "</ul>";
+    }
+
+    function refreshCustomSection(){
+      customSection.style.display = currentRecipe === "custom" ? "grid" : "none";
+    }
+
+    recipeButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        recipeButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentRecipe = btn.dataset.recipe;
+        refreshCustomSection();
+        buildString();
+      });
+    });
+
+    passButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        passButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentPass = btn.dataset.pass;
+        buildString();
+      });
+    });
+
+    [protectShiny, protectLegendary, protectPvp, protectPve].forEach(el => {
+      el.addEventListener("change", buildString);
+    });
+
+    async function copyText(){
+      try{
+        await navigator.clipboard.writeText(output.value);
+        showToast("Advanced cleanup string copied.");
+      }catch(err){
+        output.select();
+        document.execCommand("copy");
+        showToast("Advanced cleanup string copied.");
+      }
+    }
+
+    function loadPresets(){
+      const raw = localStorage.getItem("pogo-v3-presets");
+      const presets = raw ? JSON.parse(raw) : [];
+      if(!presets.length){
+        presetList.textContent = "No presets saved yet.";
+        return presets;
+      }
+      presetList.innerHTML = presets.map(p => "• " + p.name).join("<br>");
+      return presets;
+    }
+
+    function savePreset(){
+      const name = presetName.value.trim();
+      if(!name){
+        showToast("Name your preset first.");
+        return;
+      }
+
+      const raw = localStorage.getItem("pogo-v3-presets");
+      const presets = raw ? JSON.parse(raw) : [];
+
+      const preset = {
+        name,
+        recipe: currentRecipe,
+        pass: currentPass,
+        output: output.value
+      };
+
+      presets.push(preset);
+      localStorage.setItem("pogo-v3-presets", JSON.stringify(presets));
+      loadPresets();
+      showToast("Preset saved.");
+    }
+
+    async function sharePreset(){
+      const name = presetName.value.trim() || "Pokémon GO preset";
+      const text = name + "\\n\\n" + output.value;
+
+      if(navigator.share){
+        try{
+          await navigator.share({
+            title: name,
+            text
+          });
+          showToast("Share sheet opened.");
+          return;
+        }catch(err){}
+      }
+
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Preset copied for sharing.");
+      }catch(err){
+        showToast("Could not share automatically.");
+      }
+    }
+
+    function applyThemeLabel(){
+      const isLight = document.body.classList.contains("light");
+      themeToggle.textContent = isLight ? "🦑 Home colors" : "🏒 Away colors";
+    }
+
+    const savedTheme = localStorage.getItem("pogo-v3-theme");
+    if(savedTheme === "light"){
+      document.body.classList.add("light");
+    }
+    applyThemeLabel();
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      localStorage.setItem("pogo-v3-theme", document.body.classList.contains("light") ? "light" : "dark");
+      applyThemeLabel();
+    });
+
+    copyBtn.addEventListener("click", copyText);
+    openBtn.addEventListener("click", () => {
+      window.location.href = "https://pokemongolive.com";
+    });
+
+    savePresetBtn.addEventListener("click", savePreset);
+    sharePresetBtn.addEventListener("click", sharePreset);
+
+    refreshCustomSection();
+    loadPresets();
+    buildString();
+  </script>
 </body>
 </html>
