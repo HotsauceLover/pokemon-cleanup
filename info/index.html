@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Pokémon GO Transfer Companion</title><meta name="theme-color" content="#001628"><style>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Info</title><meta name="theme-color" content="#001628"><style>
 :root{
   --bg:#001628;--panel:#08304a;--panel-2:#1a425c;--border:rgba(153,217,217,.18);--text:#f4fbfd;
   --muted:#c8d9e1;--muted-2:#99d9d9;--pill:rgba(153,217,217,.08);--shadow:0 18px 40px rgba(0,0,0,.35);
@@ -40,17 +40,11 @@ body.light .btn-primary{background:var(--accent);color:#f4fbfd}
 .tap-box{cursor:pointer}.output-area{min-height:140px;white-space:pre-wrap;cursor:pointer}.small{font-size:13px;color:var(--muted);line-height:1.45}
 @media (max-width:640px){.wrap{padding:16px 12px 30px}.top-row{flex-direction:column;align-items:flex-start}}
 
-body{text-align:center} .hero{padding:22px 18px 20px} .site-sub{margin:0;color:var(--text);font-size:16px;font-weight:700;line-height:1.5}
-.site-note{margin-top:6px;font-size:11px;opacity:.45;letter-spacing:.08em;color:var(--muted-2)}
-.nav-grid{display:grid;gap:14px;margin-top:20px} .nav-button{border:none;border-radius:26px;padding:24px 18px;min-height:82px;background:linear-gradient(135deg,var(--panel),var(--panel-2));box-shadow:var(--shadow);color:var(--text);font-size:24px;font-weight:900;letter-spacing:-.02em;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);transition:transform .15s ease, filter .15s ease}
-.nav-button:hover{filter:brightness(1.04)} .nav-button.v1{outline:2px solid rgba(153,217,217,.22)}
-.recommended{display:inline-flex;align-items:center;justify-content:center;margin:0 auto 12px;padding:7px 12px;border-radius:999px;background:linear-gradient(90deg,#99d9d9,#355464);color:#001628;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-.bottom-actions{display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;margin-top:24px} .full-btn{width:min(100%,420px)}
-</style></head><body><div class="wrap"><section class="card hero"><div class="badge">Pokémon GO Transfer Companion</div><p class="site-sub">Scroll down to choose your cleanup mode ↓</p><p class="site-note">Built for quick Pokémon cleanup</p><div class="nav-grid"><div class="recommended">⭐ Recommended: Start here</div><a class="nav-button v1" href="./v1/">V1</a><a class="nav-button" href="./v2/">V2</a><a class="nav-button" href="./v3/">V3</a><a class="nav-button" href="./info/">Info</a></div><div class="bottom-actions"><button id="shareBtn" class="btn btn-secondary full-btn" type="button">🔗 Share</button><button id="themeToggle" class="theme-btn full-btn" type="button">🏒 Away colors</button></div></section></div><div id="toast" class="toast">Copied</div><script>
-const toast=document.getElementById("toast"),themeToggle=document.getElementById("themeToggle");let toastTimer=null;
+body{display:flex;align-items:center;justify-content:center;text-align:center} .holder{max-width:460px;padding:20px} .icon{font-size:56px;margin-bottom:14px}
+</style></head><body><div class="holder card" style="padding:24px"><div style="display:flex;justify-content:flex-start;margin-bottom:16px"><button class="back-btn" onclick="goBack()">⬅ Back</button></div><div class="icon">🚧</div><div class="badge">Info</div><h1 class="title" style="font-size:32px;margin-top:12px">Under Construction</h1><p class="sub">This page will explain what each version does, when to use them, and how to avoid mistakes.</p><div style="margin-top:16px"><button class="btn btn-secondary" type="button" onclick="eventsPlaceholder()">📅 Pokémon GO Events</button></div></div><div id="toast" class="toast">Copied</div><script>
+const toast=document.getElementById("toast");let toastTimer=null;
 function showToast(message){toast.textContent=message;toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove("show"),1500)}
-function applyTheme(){themeToggle.textContent=document.body.classList.contains("light")?"🦑 Home colors":"🏒 Away colors"}
-if(localStorage.getItem("pogo-landing-theme")==="light")document.body.classList.add("light");applyTheme();
-themeToggle.addEventListener("click",()=>{document.body.classList.toggle("light");localStorage.setItem("pogo-landing-theme",document.body.classList.contains("light")?"light":"dark");applyTheme()});
-document.getElementById("shareBtn").addEventListener("click",async()=>{const u=window.location.href;if(navigator.share){try{await navigator.share({title:"Pokémon GO Transfer Companion",text:"Try this Pokémon GO transfer companion.",url:u});showToast("Shared");return}catch(err){}}try{await navigator.clipboard.writeText(u);showToast("Copied")}catch(err){showToast("Share unavailable")}});
+function goBack(){if(window.history.length>1)window.history.back();else window.location.href="../";}
+function eventsPlaceholder(){showToast("Coming soon")}
+if(localStorage.getItem("pogo-landing-theme")==="light")document.body.classList.add("light");
 </script></body></html>
