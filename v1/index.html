@@ -1,26 +1,453 @@
 <!DOCTYPE html>
-<html>
-<body style="background:#001628;color:#f4fbfd;font-family:sans-serif;padding:20px">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokémon GO Transfer Companion — V1 Basic</title>
+  <meta name="theme-color" content="#001628" />
+  <style>
+    :root{
+      --bg:#001628;
+      --panel:#08304a;
+      --panel-2:#1a425c;
+      --border:rgba(153,217,217,.18);
+      --text:#f4fbfd;
+      --muted:#c8d9e1;
+      --muted-2:#99d9d9;
+      --pill:rgba(153,217,217,.08);
+      --button-bg:#355464;
+      --button-text:#f4fbfd;
+      --shadow:0 16px 40px rgba(0,0,0,.35);
+      --accent:#99d9d9;
+      --danger:#e9072b;
+      --code-bg:rgba(0,22,40,.28);
+      --tile:rgba(53,84,100,.26);
+    }
 
-<h2>🧹 V1 Basic</h2>
+    body.light{
+      --bg:#f4fbfd;
+      --panel:#ffffff;
+      --panel-2:#eaf4f7;
+      --border:rgba(0,22,40,.12);
+      --text:#001628;
+      --muted:#355464;
+      --muted-2:#4f7182;
+      --pill:#f5fbfc;
+      --button-bg:#001628;
+      --button-text:#f4fbfd;
+      --shadow:0 16px 40px rgba(0,22,40,.10);
+      --accent:#355464;
+      --danger:#e9072b;
+      --code-bg:#eef6f8;
+      --tile:#f0f7f9;
+    }
 
-<p>Copy → paste → clean → done</p>
+    *{box-sizing:border-box}
 
-<textarea style="width:100%;height:120px">
-!shiny&!legendary&!mythical&!favorite
-</textarea>
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:linear-gradient(180deg,var(--bg),color-mix(in srgb, var(--bg) 88%, #00111f));
+      color:var(--text);
+      min-height:100vh;
+    }
 
-<br><br>
+    .wrap{
+      max-width:760px;
+      margin:0 auto;
+      padding:18px 14px 34px;
+    }
 
-<button onclick="copyText()">Copy</button>
+    .hero{
+      border:1px solid var(--border);
+      border-radius:30px;
+      overflow:hidden;
+      background:linear-gradient(135deg,var(--panel),var(--panel-2));
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
 
-<script>
-function copyText() {
-  const text = document.querySelector("textarea").value;
-  navigator.clipboard.writeText(text);
-  alert("Copied!");
-}
-</script>
+    .hero-top{
+      padding:20px;
+      border-bottom:1px solid var(--border);
+    }
 
+    .top-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid rgba(153,217,217,.28);
+      background:rgba(153,217,217,.10);
+      color:var(--accent);
+      border-radius:999px;
+      padding:7px 11px;
+      font-size:11px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-weight:800;
+      margin-bottom:12px;
+    }
+
+    .theme-btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background:var(--button-bg);
+      color:var(--button-text);
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(28px,5vw,42px);
+      line-height:1.02;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .sub{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.45;
+    }
+
+    .safety{
+      margin-top:18px;
+      border:1px solid var(--border);
+      border-radius:24px;
+      overflow:hidden;
+      background:var(--pill);
+    }
+
+    .safety-grad{
+      background:linear-gradient(90deg,#99d9d9,#355464,#e9072b);
+      padding:1px;
+    }
+
+    .safety-inner{
+      background:linear-gradient(135deg, color-mix(in srgb, var(--panel) 96%, black 4%), color-mix(in srgb, var(--panel-2) 96%, black 4%));
+      display:grid;
+      grid-template-columns:88px 1fr;
+    }
+
+    .safety-icon{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:50px;
+      background:rgba(0,0,0,.12);
+      padding:14px;
+    }
+
+    .safety-content{
+      padding:16px;
+    }
+
+    .safety-kicker{
+      font-size:11px;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      color:var(--muted-2);
+      font-weight:900;
+    }
+
+    .safety-title{
+      margin-top:8px;
+      font-size:22px;
+      font-weight:900;
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+
+    .safety-steps{
+      display:grid;
+      gap:8px;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      margin-top:12px;
+    }
+
+    .safety-step{
+      border-radius:18px;
+      background:var(--tile);
+      padding:12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    .safety-step strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+
+    .safety-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .panel{
+      margin-top:18px;
+      border:1px solid var(--border);
+      border-radius:30px;
+      background:linear-gradient(135deg,var(--panel),var(--panel-2));
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .section-title{
+      font-size:12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:var(--muted-2);
+      font-weight:900;
+      margin-bottom:14px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:8px 12px;
+      background:rgba(153,217,217,.10);
+      color:var(--accent);
+      border:1px solid rgba(153,217,217,.28);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:12px;
+    }
+
+    .lead{
+      color:var(--muted);
+      margin:0 0 16px;
+      line-height:1.5;
+      font-size:15px;
+    }
+
+    .output{
+      width:100%;
+      min-height:132px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      background:var(--code-bg);
+      color:var(--text);
+      padding:14px;
+      font:600 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      resize:vertical;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:16px;
+      padding:13px 16px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      transition:transform .15s ease, filter .15s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:scale(.99)}
+
+    .btn-primary{
+      background:var(--accent);
+      color:#001628;
+    }
+
+    body.light .btn-primary{
+      color:#f4fbfd;
+      background:var(--accent);
+    }
+
+    .btn-secondary{
+      background:var(--tile);
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .tiny-note{
+      margin-top:10px;
+      color:var(--muted-2);
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:14px;
+      transform:translateX(-50%) translateY(16px);
+      width:min(calc(100% - 24px), 700px);
+      border-radius:18px;
+      padding:14px 16px;
+      text-align:center;
+      font-weight:800;
+      font-size:14px;
+      color:#f4fbfd;
+      background:rgba(53,84,100,.92);
+      border:1px solid rgba(153,217,217,.35);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow);
+      opacity:0;
+      pointer-events:none;
+      transition:all .28s ease;
+      z-index:50;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    @media (max-width:640px){
+      .top-row{
+        flex-direction:column;
+      }
+      .theme-btn{
+        align-self:flex-start;
+      }
+      .safety-inner{
+        grid-template-columns:1fr;
+      }
+      .safety-steps{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-top">
+        <div class="top-row">
+          <div>
+            <div class="badge">Pokémon GO Transfer Companion</div>
+            <h1>🧹 V1 Basic</h1>
+            <p class="sub">Copy → paste → quick-scan → clean</p>
+          </div>
+          <button id="themeToggle" class="theme-btn" type="button">🏒 Away colors</button>
+        </div>
+
+        <section class="safety">
+          <div class="safety-grad">
+            <div class="safety-inner">
+              <div class="safety-icon">⚠️</div>
+              <div class="safety-content">
+                <div class="safety-kicker">Quick safety check</div>
+                <div class="safety-title">Don’t tap Select All and instantly transfer.</div>
+                <div class="safety-steps">
+                  <div class="safety-step"><strong>1. Copy</strong><div>Use the filter below.</div></div>
+                  <div class="safety-step"><strong>2. Quick-scan</strong><div>Look for anything spicy.</div></div>
+                  <div class="safety-step"><strong>3. Favorite</strong><div>Star keeps, then transfer.</div></div>
+                </div>
+                <div class="safety-note"><strong>Why:</strong> even a strong cleanup filter can still catch fringe PvP or PvE keeps like near-ideal IV spreads.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">Main cleanup string</div>
+      <div class="pill">⭐ Recommended: Start here</div>
+      <p class="lead">This is the balanced everyday cleanup string. It protects more near-ideal PvP spreads while keeping the workflow simple and fast.</p>
+
+      <textarea id="cleanupString" class="output" spellcheck="false">!favorite&!shiny&!legendary&!mythical&!ultra beasts&!costume&!shadow&!purified&!traded&!lucky&!4*&!xxs&!xxl&!#&!(0-2attack&2-4defense&2-4hp)&!(3-4attack&3-4defense&3-4hp)</textarea>
+
+      <div class="actions">
+        <button id="copyBtn" class="btn btn-primary" type="button">📋 Copy</button>
+        <button id="openBtn" class="btn btn-secondary" type="button">🎮 Open Pokémon GO</button>
+        <a class="btn btn-secondary" href="../index.html">⬅ Back to Landing</a>
+      </div>
+
+      <div class="tiny-note">
+        Best use: copy the string, paste it in Pokémon GO, quick-scan the results, favorite anything worth keeping, then transfer the rest.
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast">Copied.</div>
+
+  <script>
+    const toast = document.getElementById("toast");
+    const themeToggle = document.getElementById("themeToggle");
+    const copyBtn = document.getElementById("copyBtn");
+    const openBtn = document.getElementById("openBtn");
+    const cleanupString = document.getElementById("cleanupString");
+    let toastTimer = null;
+
+    function showToast(message){
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    async function copyText(){
+      try{
+        await navigator.clipboard.writeText(cleanupString.value);
+        showToast("Cleanup string copied.");
+      }catch(err){
+        cleanupString.select();
+        document.execCommand("copy");
+        showToast("Cleanup string copied.");
+      }
+    }
+
+    function applyThemeLabel(){
+      const isLight = document.body.classList.contains("light");
+      themeToggle.textContent = isLight ? "🦑 Home colors" : "🏒 Away colors";
+    }
+
+    const savedTheme = localStorage.getItem("pogo-v1-theme");
+    if(savedTheme === "light"){
+      document.body.classList.add("light");
+    }
+    applyThemeLabel();
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      localStorage.setItem("pogo-v1-theme", document.body.classList.contains("light") ? "light" : "dark");
+      applyThemeLabel();
+    });
+
+    copyBtn.addEventListener("click", copyText);
+
+    openBtn.addEventListener("click", () => {
+      window.location.href = "https://pokemongolive.com";
+    });
+  </script>
 </body>
 </html>
